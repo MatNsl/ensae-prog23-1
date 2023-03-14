@@ -215,40 +215,45 @@ def union(nodes_1,nodes_2,link,rank):
         rank[root1]+=1
 
 
-def krustal():
-    min_tree=[]
+def krustal(g):
+    with open(filename, "r") as file:
+        n, m = map(int, file.readline().split())
+    liste_nodes=list(range(1,n+1))
+    min_tree={nodes:[] for nodes in liste_nodes}
     e=0
     i=0
     edges=[]
-    rank={nodes:0 for nodes in self.nodes}
-    link={nodes:nodes for nodes in self.nodes} # au début chaque noeud est dans un graphe dont il est le seul élément. 
+    rank={nodes:0 for nodes in liste_nodes}
+    link={nodes:nodes for nodes in liste_nodes} # au début chaque noeud est dans un graphe dont il est le seul élément. 
         
-    for nodes in self.nodes : #on crée une liste contenant les arêtes ie une liste de sous-listes
+    for nodes in liste_nodes : #on crée une liste contenant les arêtes ie une liste de sous-listes
         #où chaque sous liste comprend les deux sommets et la puissance minimale sur le neoud. 
-        for neighbor in self.graph[nodes]:
+        for neighbor in g[nodes]:
             edges.append([nodes,neighbor[0],neighbor[1]])
 
     edges_sorted=sorted(edges, key=lambda item: item[2])
 
-    while e < len(self.nodes) - 1 and i<len(edges_sorted): #on sait que dans un arbre il y a au maximum nbres de nodes - 1 edges
+    while e < len(liste_nodes) - 1 and i<len(edges_sorted): #on sait que dans un arbre il y a au maximum nbres de nodes - 1 edges
         n_1,n_2,p_m = edges_sorted[i] 
         i = i + 1
-        x = self.find(n_1, link)
-        y = self.find(n_2, link)
+        x = find(n_1, link)
+        y = find(n_2, link)
 
         if x != y:
             e = e + 1
-            min_tree.append([n_1,n_2,p_m]) #si les deux nodes ne font pas partie du même graphe connexe alors on ajoute l'edge entre les deux.
-            self.union(x, y, link, rank)
+            min_tree[n_1].append([n_2,p_m]) #si les deux nodes ne font pas partie du même graphe connexe alors on ajoute l'edge entre les deux.
+            union(x, y, link, rank)
         
-     return min_tree
+    return min_tree
+
+import time
 
 def estimated_time(filename):
     with open(filename, "r") as file:
-        n, m = map(int, file.readline().split())
-        g = Graph(range(1, n+1))
+        n = map(int, file.readline())
         start=time.perf_counter()
-        for t in T[0:10] : # T est ici la liste des trajets allant de src à dest 
-            g.min_power(scr,dest,t)
+        for i in range(20):
+            src,dest,power=list(map(int, file.readline().split()))
+            g.min_power(scr,dest)
         end=timz.perf_counter()
     return ((end-start)/10)*len(T)
