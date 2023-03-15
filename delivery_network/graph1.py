@@ -28,7 +28,7 @@ class Graph:
         self.graph = dict([(n, []) for n in nodes])
         self.nb_nodes = len(nodes)
         self.nb_edges = 0
-    
+
 
     def __str__(self):
         """Prints the graph as a list of neighbors for each node (one per line)"""
@@ -39,7 +39,7 @@ class Graph:
             for source, destination in self.graph.items():
                 output += f"{source}-->{destination}\n"
         return output
-    
+
     def add_edge(self, node1, node2, power_min, dist=1):
         """
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
@@ -55,6 +55,9 @@ class Graph:
         dist: numeric (int or float), optional
             Distance between node1 and node2 on the edge. Default is 1.
         """
+        """
+        We create the nodes needed for the edge if they do not already exist.
+        """
         if node1 not in self.graph:
             self.graph[node1] = []
             self.nb_nodes += 1
@@ -64,6 +67,10 @@ class Graph:
             self.nb_nodes += 1
             self.nodes.append(node2)
 
+        """
+        Two values are added to our dictionary self.graph,
+        keys being node1 and node2.
+        """
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
@@ -74,6 +81,9 @@ class Graph:
         visited={nodes:False for nodes in self.nodes}
         path=[]
 
+        """
+        We use booleans in order not to have any 'infinite' loop.
+        """
         def visite(nodes,path):
             visited[nodes]=True
             path.append(nodes)
@@ -97,6 +107,9 @@ class Graph:
         liste=[]
         node_visited={nodes:False for nodes in self.nodes}
 
+        """
+        Another function is used to do a deep first search (dfs).
+        """
         def dfs(nodes):
             composant=[nodes]
             for voisin in self.graph[nodes]:
@@ -104,11 +117,11 @@ class Graph:
                 if not node_visited[voisin]:
                     node_visited[voisin]=True
                     composant=composant+dfs(voisin)
-            return composant 
+            return composant
         for node in self.nodes:
-            if not node_visited[nodes]:
-                liste.append(dfs(nodes))
-        return liste 
+            if not node_visited[node]:
+                liste.append(dfs(node))
+        return liste
 
 
     def connected_components_set(self):
@@ -117,7 +130,13 @@ class Graph:
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
         """
         return set(map(frozenset, self.connected_components()))
-    
+
+    """
+    Results of the tests:
+    For network.02.in: {frozenset({9}), frozenset({8}), frozenset({7}),
+    frozenset({10}), frozenset({6}), frozenset({1, 2, 3, 4}), frozenset({5})}
+    """
+
     def min_power(self, src, dest):
         """
         Should return path, min_power. 
@@ -189,12 +208,27 @@ def graph_from_file(filename):
             if len(edge) == 3:
                 node1, node2, power_min = edge
                 g.add_edge(node1, node2, power_min) # will add dist=1 by default
-            elif len(edge) == 4:
+            elif len(edge) == 4: # s1q4: Taking into account the distance if it exists.
                 node1, node2, power_min, dist = edge
                 g.add_edge(node1, node2, power_min, dist)
             else:
                 raise Exception("Format incorrect")
     return g
+
+"""
+Result for s1q4:
+The graph has 10 nodes and 4 edges.
+1-->[(4, 11, 6), (2, 4, 89)]
+2-->[(3, 4, 3), (1, 4, 89)]
+3-->[(2, 4, 3), (4, 4, 2)]
+4-->[(3, 4, 2), (1, 11, 6)]
+5-->[]
+6-->[]
+7-->[]
+8-->[]
+9-->[]
+10-->[]
+"""
 
 def find(nodes, link): #on veut trouver grâce à cette fonction dans quel graphe le noeud est.
         #si deux noeuds ont le même link alors ils sont dans le même graphe
@@ -224,16 +258,16 @@ def krustal(g):
     i=0
     edges=[]
     rank={nodes:0 for nodes in liste_nodes}
-    link={nodes:nodes for nodes in liste_nodes} # au début chaque noeud est dans un graphe dont il est le seul élément. 
+    link={nodes:nodes for nodes in liste_nodes} # At the beginning, each node is in a graph of which it is the only component. 
         
-    for nodes in liste_nodes : #on crée une liste contenant les arêtes ie une liste de sous-listes
-        #où chaque sous liste comprend les deux sommets et la puissance minimale sur le neoud. 
+    for nodes in liste_nodes : # We create a list that contains the edges i.e., a list composed of sub-lists
+        # where each sub-list contains both vertex and the minimal power associated.
         for neighbor in g[nodes]:
             edges.append([nodes,neighbor[0],neighbor[1]])
 
     edges_sorted=sorted(edges, key=lambda item: item[2])
 
-    while e < len(liste_nodes) - 1 and i<len(edges_sorted): #on sait que dans un arbre il y a au maximum nbres de nodes - 1 edges
+    while e < len(liste_nodes) - 1 and i<len(edges_sorted): # It is known that there are no more than "number of nodes - 1" edges in a tree.
         n_1,n_2,p_m = edges_sorted[i] 
         i = i + 1
         x = find(n_1, link)
@@ -241,11 +275,14 @@ def krustal(g):
 
         if x != y:
             e = e + 1
-            min_tree[n_1].append([n_2,p_m]) #si les deux nodes ne font pas partie du même graphe connexe alors on ajoute l'edge entre les deux.
+            min_tree[n_1].append([n_2,p_m]) # If both nodes are not part of the same connected graph, then we add the edge that links them.
             union(x, y, link, rank)
         
     return min_tree
 
+"""
+We find the time needed thanks to time.perf_counter()
+"""
 import time
 
 def estimated_time(filename):
