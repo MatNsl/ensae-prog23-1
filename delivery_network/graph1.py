@@ -310,7 +310,8 @@ def kruskal(g):
 We find the time needed thanks to time.perf_counter().
 """
 import time
-
+"""
+This is not working, cf below for an alternative.
 def estimated_time(filename):
     with open(filename, "r") as file:
         n = map(int, file.readline())
@@ -320,3 +321,19 @@ def estimated_time(filename):
             g.min_power(scr,dest)
         end=time.perf_counter()
     return ((end-start)/10)*len(T)
+"""
+
+def estimated_time(nbr):
+    data_path = "input/"
+    nbr = str(nbr)
+    g = data_path + "network." + nbr + ".in"
+    g = graph_from_file(g)
+    filename = data_path + "routes." + nbr + ".in"
+    with open(filename, "r") as file:
+        n = int(file.readline())
+        start=time.perf_counter()
+        for i in range(20):
+            src,dest,power=list(map(int, file.readline().split()))
+            g.min_power(src,dest)
+        end=time.perf_counter()
+    return ((end-start)/20)*n
