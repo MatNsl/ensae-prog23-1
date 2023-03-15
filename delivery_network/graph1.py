@@ -251,8 +251,13 @@ The graph has 10 nodes and 4 edges.
 10-->[]
 """
 
-def find(nodes, link): #on veut trouver grâce à cette fonction dans quel graphe le noeud est.
-        #si deux noeuds ont le même link alors ils sont dans le même graphe
+"""
+s2q12:
+We create two functions (find and union) needed for our function kruskal.
+"""
+
+def find(nodes, link): # We want to find in which graph the node is thanks to this function.
+        # If two nodes have the same link, then they are in the same graph.
         if link[nodes]==nodes: 
             return nodes
         return find(link[nodes],link)
@@ -261,16 +266,16 @@ def find(nodes, link): #on veut trouver grâce à cette fonction dans quel graph
 def union(nodes_1,nodes_2,link,rank):
     root1=find(nodes_1,link)
     root2=find(nodes_2,link)
-    if rank[root1]>rank[root2]: #on ajoute root2 au graphe contenant root1, rank sert juste à définir un ordre 
+    if rank[root1]>rank[root2]: # Root2 is added to the graph containing root1. Rank is used to define an order.
         link[root2]=root1
-    elif rank[root1]<rank[root2]: #on ajoute root1 au graphe contenant root2 
+    elif rank[root1]<rank[root2]: # Root1 is added to the graph containing root2. 
         link[root1]=root2 
     else :
         link[root2]=root1
         rank[root1]+=1
 
 
-def krustal(g):
+def kruskal(g):
     with open(filename, "r") as file:
         n, m = map(int, file.readline().split())
     liste_nodes=list(range(1,n+1))
@@ -302,7 +307,7 @@ def krustal(g):
     return min_tree
 
 """
-We find the time needed thanks to time.perf_counter()
+We find the time needed thanks to time.perf_counter().
 """
 import time
 
@@ -313,5 +318,5 @@ def estimated_time(filename):
         for i in range(20):
             src,dest,power=list(map(int, file.readline().split()))
             g.min_power(scr,dest)
-        end=timz.perf_counter()
+        end=time.perf_counter()
     return ((end-start)/10)*len(T)
