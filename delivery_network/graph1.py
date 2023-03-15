@@ -101,7 +101,14 @@ class Graph:
         
         t=visite(src,path)
         return t
-    
+    """
+    Result of the test (tests/test_s1q3_node_reachable.py):
+    ..
+    ----------------------------------------------------------------------
+    Ran 2 tests in 0.000s
+
+    OK
+    """
 
     def connected_components(self):
         liste=[]
@@ -126,14 +133,21 @@ class Graph:
 
     def connected_components_set(self):
         """
-        The result should be a set of frozensets (one per component), 
+        The result should be a set of frozensets (one per component),
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
         """
         return set(map(frozenset, self.connected_components()))
 
     """
-    Results of the tests:
-    For network.02.in: {frozenset({9}), frozenset({8}), frozenset({7}),
+    Results of the test (tests/test_s1q2_connected_components.py):
+    ..
+    ----------------------------------------------------------------------
+    Ran 2 tests in 0.000s
+
+    OK
+
+    For network.02.in:
+    {frozenset({9}), frozenset({8}), frozenset({7}),
     frozenset({10}), frozenset({6}), frozenset({1, 2, 3, 4}), frozenset({5})}
     """
 
@@ -146,7 +160,7 @@ class Graph:
         for nodes in self.nodes :
             N.append(nodes)
             for city in self.graph[nodes]:
-                if city[0] not in N: #pour ne pas prendre deux fois la même puissance pour une même arrête
+                if city[0] not in N:  # In order not to take the same power twice for the same edge
                    L.append(city[1])
         L.sort()
         i=0 
@@ -216,6 +230,13 @@ def graph_from_file(filename):
     return g
 
 """
+Result for s1q1 (tests/test_s1q1_graph_loading.py):
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK
+
 Result for s1q4:
 The graph has 10 nodes and 4 edges.
 1-->[(4, 11, 6), (2, 4, 89)]
